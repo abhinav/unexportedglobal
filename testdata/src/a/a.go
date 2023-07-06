@@ -1,0 +1,55 @@
+package a
+
+import (
+	"errors"
+	"fmt"
+)
+
+var ExportedVar = "foo"
+
+var unexportedVar = "foo" // want `unexported global "unexportedVar" should be prefixed with '_'`
+
+var _unexportedVar = "foo"
+
+const ExportedConstant = "bar"
+
+var unexportedConstant = "bar" // want `unexported global "unexportedConstant" should be prefixed with '_'`
+
+var _unexportedConstant = "bar"
+
+var (
+	withAType      int // want `unexported global "withAType" should be prefixed with '_'`
+	_alsoWithAType string
+)
+
+const (
+	badConstant   = "foo" // want `unexported global "badConstant" should be prefixed with '_'`
+	_goodConstant = 42
+)
+
+var multiple, _decls, one, _line int // want `unexported global "multiple" should be prefixed with '_'` `unexported global "one" should be prefixed with '_'`
+
+// Should not error:
+var errSadness = errors.New("exception")
+
+// Hack to make a constant error type.
+type sillyError string
+
+var _ error = sillyError("")
+
+func (err sillyError) Error() string {
+	return string(err)
+}
+
+// Should not error
+const errSilly sillyError = "don't do this"
+
+func _1() {
+	unexported := "foo" // should not error
+	fmt.Println(unexported)
+}
+
+func _2() {
+	const unexported = "foo" // should not error
+	fmt.Println(unexported)
+}
