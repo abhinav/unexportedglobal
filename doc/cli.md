@@ -1,4 +1,4 @@
-# Usage
+# Command line usage
 
 To use unexportedglobal from the command line,
 first install the standalone program by running:
@@ -10,11 +10,12 @@ go install go.abhg.dev/unexportedglobal/cmd/unexportedglobal@latest
 Then use it like so:
 
 ```bash
-unexportedglobal ./...
+go vet -vettool=$(which unexportedglobal) ./...
 ```
 
-Use it with `go vet` for cleaner output.
+You can also invoke it directly,
+although the output can be noisier in this form.
 
 ```bash
-go vet -vettool=$(which unexportedglobal) ./...
+unexportedglobal ./...
 ```
