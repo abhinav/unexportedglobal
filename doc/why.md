@@ -8,3 +8,10 @@ Prefixing unexported global variables with an underscore
 effectively places them in a namespace separate from normal variables,
 eliminating risk of accidentally shadowing or overwriting
 such a global variable.
+
+<div align="center">
+
+![Namespace diagram](venn.png)
+
+</div>
+
