@@ -2,6 +2,8 @@
 // that verifies that unexported global variables and constants
 // are prefixed with '_' in their names.
 //
+// # Usage
+//
 // To use this linter, run the 'unexportedglobal' binary directly:
 //
 //	$ unexportedglobal ./...
@@ -10,9 +12,15 @@
 //
 //	$ go vet -vettool=$(which unexportedglobal) ./...
 //
-// Alternatively, you can use it as a golangci-lint plugin:
+// # golangci-lint plugin
+//
+// You can use it as a golangci-lint plugin.
+// First, build it as a plugin:
 //
 //	$ go build -buildmode=plugin go.abhg.dev/unexportedglobal/cmd/unexportedglobal
+//
+// Then enable it in the golangci-lint configuration:
+//
 //	$ cat .golangci.yml
 //	linter-settings:
 //	  custom:

@@ -3,6 +3,8 @@
 - [Introduction](#introduction)
   - [Why](#why)
 - [Usage](#usage)
+  - [From the command line](#command-line-usage)
+  - [As a golangci-lint plugin](#use-as-a-golangci-lint-plugin)
 - [FAQ](#faq)
 - [License](#license)
 
@@ -47,6 +49,8 @@ such a global variable.
 
 ## Usage
 
+### Command line usage
+
 To use unexportedglobal from the command line,
 first install the standalone program by running:
 
@@ -57,27 +61,54 @@ go install go.abhg.dev/unexportedglobal/cmd/unexportedglobal@latest
 Then use it like so:
 
 ```bash
-unexportedglobal ./...
-```
-
-Use it with `go vet` for cleaner output.
-
-```bash
 go vet -vettool=$(which unexportedglobal) ./...
 ```
 
-It is also usable as a `golangci-lint` plugin:
+You can also invoke it directly,
+although the output can be noisier in this form.
 
 ```bash
-$ go build -buildmode=plugin go.abhg.dev/unexportedglobal/cmd/unexportedglobal
-$ cat .golangci.yml
-linter-settings:
-  custom:
-    unexportedglobal:
-      path: unexportedglobal.so
-      description: Verify unexported globals have an underscore prefix.
-      original-url: go.abhg.dev/unexportedglobal
+unexportedglobal ./...
 ```
+
+### Use as a golangci-lint plugin
+
+To use unexportedglobal as a golangci-lint plugin,
+take the following steps:
+
+- Clone the repository or download a source archive
+  from the Releases page.
+
+  ```bash
+  git clone https://github.com/abhinav/unexportedglobal.git
+  ```
+
+- Build the plugin:
+
+  ```bash
+  cd unexportedglobal
+  go build -buildmode=plugin ./cmd/unexportedglobal
+  ```
+
+- Add the linter under `linter-settings.custom` in your `.golangci.yml`,
+  referring to the compiled plugin (usually called 'unexportedglobal.so').
+
+  ```yaml
+  linter-settings:
+    custom:
+      unexportedglobal:
+        path: unexportedglobal.so
+        description: Verify unexported globals have an underscore prefix.
+        original-url: go.abhg.dev/unexportedglobal
+  ```
+
+- Run golangci-lint as usual.
+
+> **Warning**:
+> For this to work, your plugin must be built for the same environment
+> as the golangci-lint binary you're using.
+>
+> See [How to add a private linter to golangci-lint](https://golangci-lint.run/contributing/new-linters/#how-to-add-a-private-linter-to-golangci-lint) for details.
 
 ## FAQ
 
