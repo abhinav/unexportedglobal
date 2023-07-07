@@ -73,6 +73,10 @@ var _filter = []ast.Node{
 
 func (a *analyzer) Run(inspect *inspector.Inspector) {
 	inspect.Nodes(_filter, func(n ast.Node, push bool) (proceed bool) {
+		if !push {
+			return false
+		}
+
 		switch n := n.(type) {
 		case *ast.FuncDecl:
 			// A function can't define a global variable.
