@@ -1,0 +1,3 @@
+kind: Fixed
+body: Don't recheck already-checked nodes during the traversal.
+time: 2023-07-07T05:43:44.784286639-07:00
