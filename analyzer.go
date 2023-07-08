@@ -15,22 +15,6 @@ import (
 	"golang.org/x/tools/go/ast/inspector"
 )
 
-var _errorInterface *types.Interface
-
-func init() {
-	errObj := types.Universe.Lookup("error")
-	if errObj == nil {
-		panic("no error type in universe scope")
-	}
-
-	errIface, ok := errObj.Type().Underlying().(*types.Interface)
-	if !ok {
-		panic("error type is not an interface")
-	}
-
-	_errorInterface = errIface
-}
-
 // Analyzer implements the unexportedglobal linter.
 //
 // See package documentation for details.
@@ -44,14 +28,22 @@ var Analyzer = &analysis.Analyzer{
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
-	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
-
-	(&analyzer{
+	az := analyzer{
 		Fset:   pass.Fset,
 		Info:   pass.TypesInfo,
 		Report: pass.Report,
-	}).Run(inspect)
+	}
 
+	// If the error interface is available,
+	// use it to provide the sentinel error exception.
+	if obj := types.Universe.Lookup("error"); obj != nil {
+		if iface, ok := obj.Type().Underlying().(*types.Interface); ok {
+			az.ErrorInterface = iface
+		}
+	}
+
+	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
+	az.Run(inspect)
 	return nil, nil
 }
 
@@ -59,6 +51,11 @@ type analyzer struct {
 	Fset   *token.FileSet
 	Info   *types.Info
 	Report func(analysis.Diagnostic)
+
+	// The 'error' interface, if it exists.
+	//
+	// If it's not known, we won't provide the sentinel error exception.
+	ErrorInterface *types.Interface
 }
 
 var _filter = []ast.Node{
@@ -110,7 +107,7 @@ func (a *analyzer) ident(id *ast.Ident) {
 	}
 
 	typ := a.Info.ObjectOf(id).Type()
-	if types.Implements(typ, _errorInterface) {
+	if a.ErrorInterface != nil && types.Implements(typ, a.ErrorInterface) {
 		return
 	}
 
