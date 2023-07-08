@@ -1,4 +1,0 @@
-kind: Fixed
-body: Provide sentinel error exception only if 'error' is known. This may allow the
-  linter to operate in a broken environment.
-time: 2023-07-08T14:55:43.333839636-07:00
