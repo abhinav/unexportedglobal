@@ -47,6 +47,12 @@ effectively places them in a namespace separate from normal variables,
 eliminating risk of accidentally shadowing or overwriting
 such a global variable.
 
+<div align="center">
+
+![Namespace diagram](doc/venn.png)
+
+</div>
+
 ## Usage
 
 ### Command line usage
